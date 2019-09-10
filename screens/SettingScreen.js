@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import registerForPushNotificationsAsync from '../services/push-notifications';
+// import registerForPushNotificationsAsync from '../services/push-notifications';
 
 export default class SettingScreen extends Component {
   componentDidMount() {
-    console.log(registerForPushNotificationsAsync());
+    //console.log(registerForPushNotificationsAsync());
   }
 
   render() {

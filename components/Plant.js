@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-import Divider from './Divider';
-
 export default class Plant extends Component {
   constructor(props) {
     super(props);
@@ -10,19 +8,15 @@ export default class Plant extends Component {
 
   render() {
     return (
-      <View>
-        <Text>{this.props.name}</Text>
-        <View style={styles.row}>
-          <Text>Temperatura:</Text>
-          <Text>{this.props.temperature} °C</Text>
+      <View style={styles.container}>
+        <View>
+          <Image style={styles.plantImage} source={require('../assets/pepper.png')} />
         </View>
-        <View style={styles.row}>
-          <Text>Umidade</Text>
-          <Text>{this.props.humidity} %</Text>
-        </View>
-        <View style={styles.row}>
-          <Text>Luminosidade</Text>
-          <Text>{this.props.lightOn}</Text>
+        <View>
+          <Text style={styles.plantNameContainer}>{this.props.name}</Text>
+          <Text style={styles.text}>Temperatura: {this.props.currentTemperature} °C</Text>
+          <Text style={styles.text}>Umidade do ar: {this.props.airHumidity} %</Text>
+          <Text style={styles.text}>Umidade do solo: {this.props.soilHumidity}</Text>
         </View>
       </View>
     );
@@ -30,12 +24,23 @@ export default class Plant extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {},
-  row: {
-    flexDirection: 'row'
+  container: {
+    backgroundColor: '#1F1F28',
+    marginTop: 0,
+    padding: 12,
+    borderRadius: 2
   },
-  divider: {
-    borderColor: '#E0E6ED',
-    borderWidth: 1
+  text: {
+    color: '#ddd',
+    fontSize: 18
+  },
+  plantImage: {
+    //flex: 1,
+    width: 40,
+    height: 40
+  },
+  plantNameContainer: {
+    color: '#ddd',
+    fontSize: 26
   }
 });

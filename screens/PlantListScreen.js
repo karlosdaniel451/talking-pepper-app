@@ -1,71 +1,66 @@
 import React, { Component } from 'react';
-import { View, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { View, StyleSheet } from 'react-native';
+
+import { Icon, Button } from 'react-native-elements';
 
 import Plant from '../components/Plant';
+import Divider from '../components/Divider';
 
-const URL = 'http://192.168.1.11:3000/plants/';
+const URLBase = 'http://192.168.0.4:3000/plants/data/';
 
 export default class PlantListScreen extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      data: [],
-      page: 1,
-      loading: false
+      data: {}
     };
+
+    setInterval(() => {
+      this.loadPlantsData();
+    }, 3000);
   }
 
   componentDidMount() {
-    this.loadRepositories();
+    this.loadPlantsData();
   }
 
-  loadRepositories = async () => {
-    if (this.state.loading) return;
+  loadPlantsData = async () => {
+    const responsePlant1 = await fetch(URLBase + '1');
 
-    const { page } = this.state;
-
-    this.setState({
-      loading: true
-    });
-
-    const response = await axios.get(URL);
-    const plants = response.data;
+    const plant1 = await responsePlant1.json();
 
     this.setState({
-      data: [...this.state.data, ...plants.plants],
-      page: page + 1,
-      loading: false
+      data: plant1
     });
+
+    console.log(this.state.data);
   };
 
-  renderFooter = () => {
-    if (!this.state.loading) return null;
-
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator />
-      </View>
-    );
+  rechargeScreen = () => {
+    this.loadPlantsData();
   };
-
-  renderItem = ({ item }) => (
-    <Plant name={item.name} humidity={item.humidity} lightOn={item.lightOn} />
-  );
 
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
-          style={{ marginTop: 30 }}
-          contentContainerStyle={styles.list}
-          data={this.state.data}
-          renderItem={this.renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          onEndReached={this.loadRepositories}
-          onEndReachedThreshold={0.1}
-          ListFooterComponent={this.renderFooter}
-        />
+        <View style={styles.buttonRefreshContainer}>
+          <Button
+            style={styles.refreshButton}
+            icon={<Icon name="refresh" size={20} />}
+            onPress={this.rechargeScreen}
+            buttonStyle={styles.refreshButton}
+          />
+        </View>
+        <View style={styles.plantsContainer}>
+          <Plant
+            name="Pimenteira"
+            currentTemperature={this.state.data.temperatura}
+            airHumidity={this.state.data.umidade_ar}
+            soilHumidity={this.state.data.umidade_solo}
+          />
+          <Divider color="#ddd" thickness={0.5} />
+        </View>
       </View>
     );
   }
@@ -77,14 +72,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#1F1F28'
   },
-  list: {
-    paddingHorizontal: 20
+  buttonRefreshContainer: {
+    marginLeft: '85%',
+    marginBottom: 0,
+    width: '13%',
+    height: '13%'
   },
-  text: {
-    color: '#eee'
+  refreshButton: {
+    backgroundColor: '#00CC55',
+    top: -140
   },
-  loading: {
-    alignSelf: 'center',
-    marginVertical: 20
+  plantsContainer: {
+    top: -180
   }
 });
